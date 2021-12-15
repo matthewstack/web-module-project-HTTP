@@ -16,15 +16,6 @@ const AddMovieForm = (props) => {
     description: "",
   });
 
-  //   const { id } = useParams();
-
-  //   useEffect(()=>{
-  //       axios.get(`http://localhost:9000/api/movies/${id}`)
-  //           .then(res=>{
-  //               setMovie(res.data);
-  //           })
-  //   }, [id]);
-
   const handleChange = (e) => {
     setMovie({
       ...movie,
