@@ -1,61 +1,74 @@
 import React, { useEffect, useState } from "react";
 
 import { Route, Switch, Redirect } from "react-router-dom";
-import MovieList from './components/MovieList';
-import Movie from './components/Movie';
+import MovieList from "./components/MovieList";
+import Movie from "./components/Movie";
 
-import MovieHeader from './components/MovieHeader';
+import MovieHeader from "./components/MovieHeader";
 
-import FavoriteMovieList from './components/FavoriteMovieList';
+import FavoriteMovieList from "./components/FavoriteMovieList";
+import EditMovieForm from "./components/EditMovieForm";
 
-import axios from 'axios';
+import axios from "axios";
+import AddMovieForm from "./components/AddMovieForm";
 
 const App = (props) => {
   const [movies, setMovies] = useState([]);
   const [favoriteMovies, setFavoriteMovies] = useState([]);
 
-  useEffect(()=>{
-    axios.get('http://localhost:5001/api/movies')
-      .then(res => {
+  useEffect(() => {
+    axios
+      .get("http://localhost:9000/api/movies")
+      .then((res) => {
         setMovies(res.data);
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
       });
   }, []);
 
-  const deleteMovie = (id)=> {
-  }
+  const deleteMovie = (id) => {
+    axios.delete(`http://localhost:9000/api/movies/${id}`).then((res) => {
+      setMovies(
+        res.data.filter((movie) => {
+          return movie.id !== id;
+        })
+      );
+    });
+  };
 
-  const addToFavorites = (movie) => {
-    
-  }
+  const addToFavorites = (movie) => {};
 
   return (
     <div>
       <nav className="navbar navbar-dark bg-dark">
-        <span className="navbar-brand" > HTTP / CRUD Module Project</span>
+        <span className="navbar-brand"> HTTP / CRUD Module Project</span>
       </nav>
 
       <div className="container">
-        <MovieHeader/>
+        <MovieHeader />
         <div className="row ">
-          <FavoriteMovieList favoriteMovies={favoriteMovies}/>
-        
+          <FavoriteMovieList favoriteMovies={favoriteMovies} />
+
           <Switch>
+            <Route exact path="/movies/add">
+              <AddMovieForm setMovies={setMovies} />
+            </Route>
+
             <Route path="/movies/edit/:id">
+              <EditMovieForm setMovies={setMovies} />
             </Route>
 
             <Route path="/movies/:id">
-              <Movie/>
+              <Movie deleteMovie={deleteMovie} />
             </Route>
 
             <Route path="/movies">
-              <MovieList movies={movies}/>
+              <MovieList deleteMovie={deleteMovie} movies={movies} />
             </Route>
 
             <Route path="/">
-              <Redirect to="/movies"/>
+              <Redirect to="/movies" />
             </Route>
           </Switch>
         </div>
@@ -64,6 +77,4 @@ const App = (props) => {
   );
 };
 
-
 export default App;
-
